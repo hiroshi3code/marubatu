@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>〇×ゲーム</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #000;
+            text-align: center;
+            font-size: 2em;
+            cursor: pointer;
+        }
+        #reset-button {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <table id="tic-tac-toe">
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <button id="reset-button" onclick="resetGame()">リセット</button>
+    <script>
+        const table = document.getElementById('tic-tac-toe'); // テーブル要素
+        const resetButton = document.getElementById('reset-button'); // リセットボタン
+        let currentPlayer = '〇'; // プレイヤーを〇に設定
+
+        table.addEventListener('click', function(event) {
+            const cell = event.target; // クリックされたセルを取得
+            if (cell.tagName === 'TD' && cell.textContent === '') { // セルが空の場合
+                cell.textContent = currentPlayer; // セルに現在のプレイヤーを表示
+                if (checkWin()) { // 勝利条件をチェック
+                    alert(currentPlayer + 'の勝ちぃ～～～！'); // 勝利メッセージを表示
+                    resetGame(); // ゲームをリセット
+                } else if (isDraw()) { // 引き分け条件をチェック
+                    alert('引き分けちゃった！'); // 引き分けメッセージを表示
+                    resetButton.style.display = 'block'; // リセットボタンを表示
+                } else {
+                    currentPlayer = currentPlayer === '〇' ? '×' : '〇'; // プレイヤーを交代
+                }
+            }
+        });
+
+        function checkWin() {
+            const cells = table.getElementsByTagName('td'); // 全てのセルを取得
+            const patterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // 横の勝利パターン
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // 縦の勝利パターン
+                [0, 4, 8], [2, 4, 6]             // 斜めの勝利パターン
+            ];
+
+        return patterns.some(pattern => {
+            const [a, b, c] = pattern; // pattern配列からa, b, cの3つのインデックスを取得
+            return cells[a].textContent === currentPlayer && // セルaの内容が現在のプレイヤーと一致するかチェック
+            cells[a].textContent === cells[b].textContent && // セルaとセルbの内容が一致するかチェック
+            cells[a].textContent === cells[c].textContent; // セルaとセルcの内容が一致するかチェック
+        });
+
+        }
+
+        function isDraw() {
+            const cells = table.getElementsByTagName('td'); // 全てのセルを取得
+            return Array.from(cells).every(cell => cell.textContent !== ''); // 全てのセルが埋まっているかチェック
+        }
+
+        function resetGame() {
+            const cells = table.getElementsByTagName('td'); // 全てのセルを取得
+            for (let cell of cells) {
+                cell.textContent = ''; // セルを空にする
+            }
+            currentPlayer = '〇'; // 現在のプレイヤーを〇にリセット
+            resetButton.style.display = 'none'; // リセットボタンを非表示にする
+        }
+    </script>
+</body>
+</html>
